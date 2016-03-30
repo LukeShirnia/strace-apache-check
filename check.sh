@@ -1,9 +1,14 @@
 #!/bin/bash
 default="ouput"
-read -p "What site would you like to check? " sitecheck
+validation=0
+
+while [ "$validation" -le 0 ]; do
+        read -p "What site would you like to check? " sitecheck
+        validation=$( /usr/sbin/httpd -S 2>&1 | grep "namevhost $sitecheck" | wc -l )
+        echo $validation
+done
 
 while [[ ! ("$filenameyn" =~ (y|ye|yes)$ ) ]]; do
-#if sitecheck exits; then
 read -p "Specify strace file name? (y/N) " filenameyn
   case $filenameyn in
 
@@ -27,5 +32,6 @@ done
 printf "GET / HTTP/1.1\n"; \
 printf "Host: $sitecheck\n"; echo ""; \
 sleep 2; } |  telnet 127.0.0.1 80
-#else
-#fi
+
+printf "Host: $sitecheck\n"; echo ""; \
+sleep 2; } |  telnet 127.0.0.1 80
