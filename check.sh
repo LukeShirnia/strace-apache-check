@@ -1,6 +1,11 @@
 #!/bin/bash
-default="ouput"
+default="output"
 validation=0
+
+function organise {
+test=$(awk '{print $2 }' /tmp/$default | sort -rn | head -5)
+grep "$test" /tmp/$default > /tmp/stracetop
+}
 
 while [ "$validation" -le 0 ]; do
         read -p "What site would you like to check? " sitecheck
@@ -11,11 +16,8 @@ done
 while [[ ! ("$filenameyn" =~ (y|ye|yes)$ ) ]]; do
 read -p "Specify strace file name? (y/N) " filenameyn
   case $filenameyn in
-
     y|ye|yes )
-
      read -p "What filename would you like? " default
-
     ;;
     n|N|no )
       break
@@ -31,4 +33,4 @@ done
 ( strace -o /tmp/$default -f -r -s4096 -p `pidof telnet` &  ) ; \
 printf "GET / HTTP/1.1\n"; \
 printf "Host: $sitecheck\n"; echo ""; \
-sleep 2; } |  telnet 127.0.0.1 80
+} |  telnet 127.0.0.1 80 || organise
