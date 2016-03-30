@@ -32,6 +32,3 @@ done
 printf "GET / HTTP/1.1\n"; \
 printf "Host: $sitecheck\n"; echo ""; \
 sleep 2; } |  telnet 127.0.0.1 80
-
-printf "Host: $sitecheck\n"; echo ""; \
-sleep 2; } |  telnet 127.0.0.1 80
