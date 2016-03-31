@@ -1,4 +1,7 @@
 # strace-apache-check
+
+- bash <( curl -s https://raw.githubusercontent.com/luke7858/strace-apache-check/master/check.sh)
+
 Summary: The script uses strace to follow an apache child process (prefork) and record the system calls
 It can be used to quickly troubleshoot/rule-out if the issue is website/code related
 
