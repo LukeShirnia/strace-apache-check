@@ -4,7 +4,7 @@ The script is used to automate an apache troubleshooting step (there are many st
 Note:  
 
     -Currently ONLY works with apache and php
-    -NOT testest on nginx or apache with php-fpm/fast-cgi
+    -NOT testest on nginx or apache with php-fpm/fast-cgi (currently IN-PROGRESS - strace will attach to nginx process but will not detach)
     -Currently ONLY works for standard http (port 80) websites
 
 The script:
