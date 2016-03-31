@@ -53,7 +53,12 @@ printf "Host: $sitecheck\n"; echo ""; \
 #docroot
 #if [ "/usr/sbin/httpd -S 2>&1 | grep "namevhost $sitecheck" | awk '{print $5}' | awk -F':' '{print $1}' | sed 's/(// | wc -l" -le 1 ]; then
 # root=$( grep -i "DocumentRoot" $vhost  )
+
+########Actual Command########
 #HTTP_HOST=$sitecheck REQUEST_URI=/ strace -o /tmp/phptrace -r -e trace=sendto,connect,open,write,read php "$docroot""index.php" > /dev/null
+
+
+
 #else
 #dont do it
 #fi
