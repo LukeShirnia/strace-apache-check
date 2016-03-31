@@ -12,7 +12,7 @@ Once you have this information you are then able to analyse apache and the domai
 Using a simple sort command you can see the top 10 longest running system calls and start the investigation:
 
 
-       $ sort -k2rn /tmp/ahah | head
+       $ sort -k2rn /tmp/output | head
        
 
 Note:  
