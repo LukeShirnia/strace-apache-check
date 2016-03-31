@@ -1,5 +1,8 @@
 # strace-apache-check
-The script is used to automate an apache troubleshooting step (there are many steps in the process of troubleshooting slow responses from apache)
+Summary: The script uses strace to follow an apache child process (prefork) and record the system calls
+It can be used to quickly troubleshoot/rule-out if the issue is website/code related
+
+The script is used to automate one apache troubleshooting step (there are many steps in the process of troubleshooting slow responses from apache)
 
 The script:
 
@@ -9,7 +12,7 @@ The script:
     -Outputs the strace command with timestamps into a file
     
 Once you have this information you are then able to analyse apache and the domain in question.
-Using a simple sort command you can see the top 10 longest running system calls and start the investigation:
+Using a simple sort command you can see the top 10 slowest system calls to help start the investigation:
 
 
        $ sort -k2rn /tmp/output | head
