@@ -38,12 +38,6 @@ read -p "Specify strace file name? (Default: /tmp/output) (y/N) " filenameyn
     ;;
     esac
 done
-#{  sleep 2; \
-#( strace -o /tmp/$default -f -r -s4096 -p `pidof telnet` &  ) ; \
-#printf "GET / HTTP/1.1\n"; \
-#printf "Host: $sitecheck\n"; echo ""; \
-#} |  telnet 127.0.0.1 80 > /tmp/test || organise
-
 
 { printf "GET / HTTP/1.1\n"; \
 sleep 2 ;\
@@ -51,3 +45,15 @@ sleep 2 ;\
 sleep 2 ;\
 printf "Host: $sitecheck\n"; echo ""; \
 } |  telnet 127.0.0.1 80 | grep 'HTTP/1.1\|Date:\|Server:\|Last-Modified:\|Content-Type:'  || organise
+
+#add php specific section:
+# function docroot {
+# vhost=$(/usr/sbin/httpd -S 2>&1 | grep "namevhost $sitecheck" | awk '{print $5}' | awk -F':' '{print $1}' | sed 's/(//')
+#}
+#docroot
+#if [ "/usr/sbin/httpd -S 2>&1 | grep "namevhost $sitecheck" | awk '{print $5}' | awk -F':' '{print $1}' | sed 's/(// | wc -l" -le 1 ]; then
+# root=$( grep -i "DocumentRoot" $vhost  )
+#HTTP_HOST=$sitecheck REQUEST_URI=/ strace -o /tmp/phptrace -r -e trace=sendto,connect,open,write,read php "$docroot""index.php" > /dev/null
+#else
+#dont do it
+#fi
