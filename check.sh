@@ -22,8 +22,23 @@ echo ""
 function checktelnet {
 
 if  [ $Distro == "Ubuntu" ] || [ $Distro == "Debian" ]; then
+        if [ `dpkg -l | grep -i telnet | wc -l` -lt 1 ] && [ `dpkg -l | grep -i strace | wc -l` -lt 1 ]; then
+                while [[ ! ("$telnetyn" =~ (y|ye|yes)$ ) ]]; do
+                        installtelnet
+                done
+                while [[ ! ("$straceyn" =~ (y|ye|yes)$ ) ]]; do
+                        installstrace
+                done
+        elif [ `dpkg -l | grep -i telnet | wc -l` -lt 1 ]; then
+                while [[ ! ("$telnetyn" =~ (y|ye|yes)$ ) ]]; do
+                        installtelnet
+                done
+        elif [ `dpkg -l | grep -i strace | wc -l` -lt 1 ]; then
+                while [[ ! ("$straceyn" =~ (y|ye|yes)$ ) ]]; do
+                        installstrace
+                done
+        fi
 
-        echo "LOL UBUNTU"
 
 elif [ $Distro == "CentOS" ] || [ $Distro == "Red Hat" ]; then
 
@@ -52,12 +67,15 @@ else
 fi
 }
 function installtelnet {
-
 read -p "REQUIRED: TELNET - Would you like to Install Telnet? (y/N) " telnetyn
   case $telnetyn in
     y|ye|yes )
-        echo $neat
-        yum install telnet -y | grep -i 'Total download\|Installed:' -A1
+        if  [ $Distro == "Ubuntu" ] || [ $Distro == "Debian" ]; then
+                apt-get install telnet -y | grep -i 'Total download\|Installed:' -A1
+        elif [ $Distro == "CentOS" ] || [ $Distro == "Red Hat" ]; then
+                echo $neat
+                yum install telnet -y | grep -i 'Total download\|Installed:' -A1
+        fi
     ;;
     n|N|no )
       break
@@ -70,12 +88,15 @@ read -p "REQUIRED: TELNET - Would you like to Install Telnet? (y/N) " telnetyn
     esac
 }
 function installstrace {
-
 read -p "REQUIRED: STRACE - Would you like to Install Strace? (y/N) " straceyn
   case $straceyn in
     y|ye|yes )
         echo $neat
-        yum install strace -y | grep -i 'Total download\|Installed:' -A1
+        if  [ $Distro == "Ubuntu" ] || [ $Distro == "Debian" ]; then
+                apt-get install strace -y | grep -i 'Total download\|Installed:' -A1
+        elif [ $Distro == "CentOS" ] || [ $Distro == "Red Hat" ]; then
+                yum install strace -y | grep -i 'Total download\|Installed:' -A1
+        fi
     ;;
     n|N|no )
       break
@@ -90,11 +111,11 @@ read -p "REQUIRED: STRACE - Would you like to Install Strace? (y/N) " straceyn
 
 
 function organise {
-sort -rn /tmp/$default | head > /tmp/stracesort
-echo $neat
-echo ""
-echo "Top 10 slowest system calls:"
-cat /tmp/stracesort
+        sort -rn /tmp/$default | head > /tmp/stracesort
+        echo $neat
+        echo ""
+        echo "Top 10 slowest system calls:"
+        cat /tmp/stracesort
 }
 check_distro() {
 if [ ! -f /etc/redhat-release ]; then
