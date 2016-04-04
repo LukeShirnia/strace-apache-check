@@ -1,7 +1,7 @@
 #!/bin/bash
 default="output"
 validation=0
-
+neat="###########################"
 function sitelist {
 sites=$(/usr/sbin/httpd -S 2>&1 | grep "port 80 namevhost" | awk '{print $4}')
 }
@@ -12,15 +12,87 @@ sites=$(/usr/sbin/apache2 -S 2>&1 | grep "port 80 namevhost" | awk '{print $4}')
 function telnetcommands {
 echo "GET / HTTP/1.1"
 sleep 2
-( strace -o /tmp/$default -f -r -s4096 -p `pidof telnet` &  )
+( strace -o /tmp/$default -r -yy -v -s4096 -p `pidof telnet` &  )
 #( strace -o /tmp/$default -f -r -s4096 -e trace=sendto,connect,open,write,read -p `pidof telnet` &  )
 sleep 1
 echo "Host: $sitecheck"
 echo ""
 #sleep 2
 }
+function checktelnet {
+
+if  [ $Distro == "Ubuntu" ] || [ $Distro == "Debian" ]; then
+
+        echo "LOL UBUNTU"
+
+elif [ $Distro == "CentOS" ] || [ $Distro == "Red Hat" ]; then
+
+        if [ `rpm -qa | grep -i telnet | wc -l` -lt 1  ] && [ `rpm -qa | grep -i strace | wc -l` -lt 1  ]; then
+                while [[ ! ("$telnetyn" =~ (y|ye|yes)$ ) ]]; do
+                        installtelnet
+                done
+                while [[ ! ("$straceyn" =~ (y|ye|yes)$ ) ]]; do
+                        installstrace
+                done
+        elif [ `rpm -qa | grep -i telnet | wc -l` -lt 1  ] ; then
+                while [[ ! ("$telnetyn" =~ (y|ye|yes)$ ) ]]; do
+                        installtelnet
+                done
+        elif [ `rpm -qa | grep -i strace | wc -l` -lt 1  ]; then
+                while [[ ! ("$straceyn" =~ (y|ye|yes)$ ) ]]; do
+                        installstrace
+                done
+        fi
+
+else
+
+        printf "Unsupported OS\n"
+        exit
+
+fi
+}
+function installtelnet {
+
+read -p "REQUIRED: TELNET - Would you like to Install Telnet? (y/N) " telnetyn
+  case $telnetyn in
+    y|ye|yes )
+        echo $neat
+        yum install telnet -y | grep -i 'Total download\|Installed:' -A1
+    ;;
+    n|N|no )
+      break
+    ;;
+    * )
+      printf "Please enter a valid option"
+      printf "\n----------------------------------------------\n"
+
+    ;;
+    esac
+}
+function installstrace {
+
+read -p "REQUIRED: STRACE - Would you like to Install Strace? (y/N) " straceyn
+  case $straceyn in
+    y|ye|yes )
+        echo $neat
+        yum install strace -y | grep -i 'Total download\|Installed:' -A1
+    ;;
+    n|N|no )
+      break
+    ;;
+    * )
+      printf "Please enter a valid option"
+      printf "\n----------------------------------------------\n"
+
+    ;;
+    esac
+}
+
+
 function organise {
-sort -k2rn /tmp/$default | head > /tmp/stracesort
+sort -rn /tmp/$default | head > /tmp/stracesort
+echo $neat
+echo ""
 echo "Top 10 slowest system calls:"
 cat /tmp/stracesort
 }
@@ -77,19 +149,23 @@ read -p "Specify strace file name? (Default: /tmp/output) (y/N) " filenameyn
     ;;
     esac
 }
-
         check_distro
+        checktelnet
         if [ $Distro == "CentOS" ] && [ $Version -lt 7 ] || [ $Distro == "Red Hat" ] && [ $Version -lt 7 ]; then
                 sitelist
+                echo $neat
                 whichsite
         elif [ $Distro == "CentOS" ] && [ $Version -ge 7 ] || [ $Distroi == "Red Hat" ] &&  [ $Version -ge 7 ]; then
                 sitelist
+                echo $neat
                 whichsite
         elif [ $Distro == "Ubuntu" ] && [ $Version -gt 12] && [ $Version -lt 14 ]; then
                 sitelist
+                echo $neat
                 whichsite
         elif [ $Distro = 'Debian' ] && [ $Version = 7 ]; then
                 sitelist
+                echo $neat
                 whichsite
         fi
 
@@ -111,6 +187,7 @@ read -p "Specify strace file name? (Default: /tmp/output) (y/N) " filenameyn
 
 ########Actual Command########
 #HTTP_HOST=$sitecheck REQUEST_URI=/ strace -o /tmp/phptrace -r -e trace=sendto,connect,open,write,read php "$docroot""index.php" > /dev/null
+#HTTP_HOST=www.domain.com REQUEST_URI=/ strace -tt -e trace=sendto,connect,open,write,read php /home/username/public_html/index.php
 
 #else
 #dont do it
