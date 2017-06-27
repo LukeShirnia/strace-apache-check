@@ -1,11 +1,20 @@
 # strace-apache-check
 
-- bash <( curl -s https://raw.githubusercontent.com/luke7858/strace-apache-check/master/check.sh)
+```
+bash <( curl -s https://raw.githubusercontent.com/luke7858/strace-apache-check/master/check.sh)
+```
 
 Summary: The script uses strace to follow an apache child process (prefork) and record the system calls
-It can be used to quickly troubleshoot/rule-out if the issue is website/code related
+It can be used to quickly troubleshoot/rule-out if the issue is website/code related.
+<br />
+Note: Script Currently only works for apache pre-fork with mod_php
+<br/>
 
 The script is used to automate one apache troubleshooting step (there are many steps in the process of troubleshooting slow responses from apache)
+
+<br />
+
+<br />
 
 The script:
 
