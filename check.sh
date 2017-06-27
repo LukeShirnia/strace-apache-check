@@ -196,7 +196,7 @@ read -p "Specify strace file name? (Default: /tmp/output) (y/N) " filenameyn
 
 
         telnetcommands | telnet 127.0.0.1 80 | grep 'HTTP/1.1\|Date:\|Server:\|Last-Modified:\|Content-Type:'
-        organise
+#        organise
 
 #add php specific section:
 # function docroot {
