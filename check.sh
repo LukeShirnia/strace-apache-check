@@ -13,7 +13,7 @@ function telnetcommands {
         echo "GET / HTTP/1.1"
         sleep 2
         httpd_pid=$(netstat -pant | awk '/httpd/ && /127.0.0.1/ {print $7}' | awk -F'/' '{print $1}')
-        ( strace -o /tmp/$default -r -yy -v -s4096 -p $httpd_pid &  )
+        ( strace -o /home/rack/$default -r -yy -v -s4096 -p $httpd_pid &  )
         sleep 1
         echo "Host: $sitecheck"
         echo ""
@@ -111,7 +111,7 @@ read -p "REQUIRED: STRACE - Would you like to Install Strace? (y/N) " straceyn
 
 
 function organise {
-        sort -rn /tmp/$default | head > /tmp/stracesort
+        sort -rn /home/rack/$default | head > /home/rack/stracesort
         echo $neat
         echo ""
         echo "Top 10 slowest system calls:"
@@ -196,6 +196,8 @@ read -p "Specify strace file name? (Default: /tmp/output) (y/N) " filenameyn
 
 
         telnetcommands | telnet 127.0.0.1 80 | grep 'HTTP/1.1\|Date:\|Server:\|Last-Modified:\|Content-Type:'
+        echo "Check /home/rack/" $default " for the output of strace"
+        echo "Check /home/rack/stracesort for a list of the syscalls in time order"
 #        organise
 
 #add php specific section:
