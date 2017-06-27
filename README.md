@@ -27,7 +27,9 @@ The script:
 <br />
 
 <br />
+
 ### Speed Issues
+
 If you are using this script to investigate site speed issues, you can run the following command to simply order the strace output into the highest time consuming system calls (top 10):
 
 
