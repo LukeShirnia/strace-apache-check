@@ -197,7 +197,7 @@ read -p "Specify strace file other than default? (Default: /home/rack/output (y/
 
         telnetcommands | telnet 127.0.0.1 80 | grep 'HTTP/1.1\|Date:\|Server:\|Last-Modified:\|Content-Type:'
         echo ""
-        echo "Check /home/rack/" $default " for the output of strace"
+        echo "Check /home/rack/"$default " for the output of strace"
         echo "Check /home/rack/stracesort for a list of the syscalls in time order"
 #        organise
 
