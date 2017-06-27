@@ -11,11 +11,7 @@ It can be used to quickly troubleshoot/rule-out if the issue is website/code rel
 <br/>
 
 The script can be used to automate one apache troubleshooting step (there are many steps in the process of troubleshooting issues)
-
 <br />
-
-<br />
-
 The script:
 
     -Established connection to apache using telnet
@@ -42,4 +38,3 @@ Note:
     -Works on Ubuntu/CentOS/RHEL
     -NOT testest on nginx or apache with php-fpm/fast-cgi
     -Currently ONLY works for standard http (port 80) sites
-
