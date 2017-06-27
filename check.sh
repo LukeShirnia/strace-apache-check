@@ -10,13 +10,13 @@ function sitelistubuntu {
 sites=$(/usr/sbin/apache2 -S 2>&1 | grep "port 80 namevhost" | awk '{print $4}')
 }
 function telnetcommands {
-echo "GET / HTTP/1.1"
-sleep 2
-( strace -o /tmp/$default -r -yy -v -s4096 -p `pidof telnet` &  )
-#( strace -o /tmp/$default -f -r -s4096 -e trace=sendto,connect,open,write,read -p `pidof telnet` &  )
-sleep 1
-echo "Host: $sitecheck"
-echo ""
+        echo "GET / HTTP/1.1"
+        sleep 2
+        httpd_pid=$(netstat -pant | awk '/httpd/ && /127.0.0.1/ {print $7}' | awk -F'/' '{print $1}')
+        ( strace -o /tmp/$default -r -yy -v -s4096 -p $httpd_pid &  )
+        sleep 1
+        echo "Host: $sitecheck"
+        echo ""
 #sleep 2
 }
 function checktelnet {
