@@ -23,8 +23,11 @@ The script:
     -Uses strace and the PID to monitor apache process
     -Sends a GET request and HOST name (user specified host) to apache
     -Outputs the strace command with timestamps into a file (/home/rack/output)
-    
-## Speed Issues
+
+<br />
+
+<br />
+### Speed Issues
 If you are using this script to investigate site speed issues, you can run the following command to simply order the strace output into the highest time consuming system calls (top 10):
 
 
