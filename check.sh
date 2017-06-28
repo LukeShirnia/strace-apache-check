@@ -120,7 +120,7 @@ function organise {
 check_distro() {
 if [ ! -f /etc/redhat-release ]; then
         Distro=$(cat /etc/issue | head -1 | cut -d' ' -f1)
-        if  [ $Distro == "Ubuntu"] || [ $Distro == "Debian" ]; then
+        if  [ $Distro == "Ubuntu" ] || [ $Distro == "Debian" ]; then
                 case $Distro in
                 "Ubuntu" )
                         Version=$(cat /etc/issue | head -1 | cut -d' ' -f2 | cut -d'.' -f1)
@@ -180,7 +180,7 @@ read -p "Specify strace file other than default? (Default: /home/rack/output (y/
                 sitelist
                 echo $neat
                 whichsite
-        elif [ $Distro == "Ubuntu" ] && [ $Version -gt 12] && [ $Version -lt 14 ]; then
+        elif [ $Distro == "Ubuntu" ] && [ $Version -gt 12 ] && [ $Version -lt 14 ]; then
                 sitelist
                 echo $neat
                 whichsite
