@@ -216,3 +216,5 @@ read -p "Specify strace file other than default? (Default: /home/rack/output (y/
 #else
 #dont do it
 #fi
+# nc -v --SSL -C localhost 443
+# send headers
