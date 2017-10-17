@@ -1,5 +1,24 @@
 # strace-apache-check
 
+
+
+
+# IN PROGRESS!!!! WILL UPDATE SOON
+
+
+
+<br />
+<br/>
+<br />
+<br/><br />
+<br/><br />
+<br/>
+
+
+
+
+
+
 ```
 bash <( curl -s https://raw.githubusercontent.com/luke7858/strace-apache-check/master/check.sh)
 ```
