@@ -3,7 +3,7 @@ default="output"
 validation=0
 neat="###########################"
 function sitelist {
-sites=$(/usr/sbin/httpd -S 2>&1 | grep "port 80 namevhost" | awk '{print $4}')
+sites=$(/usr/sbin/httpd -S 2>&1 | grep "port " | awk '{print $4}')
 }
 
 function sitelistubuntu {
@@ -147,8 +147,10 @@ while [ "$validation" -le 0 ]; do
         read -p "What local site would you like to check? " sitecheck
 if [ $Distro == "CentOS" ] || [ $Distro == "Red Hat" ]; then
         validation=$( /usr/sbin/httpd -S 2>&1 | grep "namevhost $sitecheck" | wc -l )
+        port_check=$( /usr/sbin/httpd -S 2>&1 | grep "namevhost $sitecheck" | awk -F':' '{print $1} '| sed 's/[^0-9]*//g')
 elif [ $Distro == "Ubuntu" ] || [ $Distro = 'Debian' ]; then
         validation=$( /usr/sbin/apache2 -S 2>&1 | grep "namevhost $sitecheck" | wc -l )
+        port_check=$( /usr/sbin/apache2 -S 2>&1 | grep "namevhost $sitecheck" | awk -F':' '{print $1} '| sed 's/[^0-9]*//g')
 fi
         echo $validation
 done
@@ -195,11 +197,10 @@ read -p "Specify strace file other than default? (Default: /home/rack/output (y/
         done
 
 
-        telnetcommands | telnet 127.0.0.1 80 | grep 'HTTP/1.1\|Date:\|Server:\|Last-Modified:\|Content-Type:'
+        telnetcommands | telnet 127.0.0.1 $port_check | grep 'HTTP/1.1\|Date:\|Server:\|Last-Modified:\|Content-Type:'
         echo ""
         echo "Check /home/rack/"$default " for the output of strace"
         echo "Check /home/rack/stracesort for a list of the syscalls in time order"
-#        organise
 
 #add php specific section:
 # function docroot {
