@@ -3,13 +3,14 @@ default="output"
 validation=0
 neat="###########################"
 function sitelist {
-sites=$(/usr/sbin/httpd -S 2>&1 | grep "port " | awk '{print $4}')
+sites=$(/usr/sbin/httpd -t -D DUMP_VHOSTS 2>&1 | grep "port " | awk '{print $4}')
 }
 
 function sitelistubuntu {
 sites=$(/usr/sbin/apache2 -S 2>&1 | grep "port 80 namevhost" | awk '{print $4}')
 }
 function telnetcommands {
+        sleep 1
         echo "GET / HTTP/1.1"
         sleep 2
         httpd_pid=$(netstat -pant | awk '/httpd/ && /127.0.0.1/ {print $7}' | awk -F'/' '{print $1}')
@@ -139,31 +140,65 @@ elif  [ `cat /etc/redhat-release | grep -i "centos" | wc -l` -gt 0 ]; then
 fi
 
 }
+function http_or_https {
+
+# check to see if port is 443
+if [ "$port_check" == "443" ]; then
+    echo "This script does not currently work for 443...coming soon"
+    echo ""
+    exit
+else
+    domain_location=$(/bin/curl -svo /dev/null localhost:$port_check -H "Host: $sitecheck" -H "X-Forwarded-Proto: https" 2>&1 | grep -o "Location\|200 OK" | sed "s/< Location: //g")
+fi
+
+echo "port check " "$port_check"
+
+if [[ "$domain_location" == *"200 OK"*  ]] && [[ "$domain_location" != *"Location"*  ]]; then
+    echo "$domain_location" "- No redirect"
+    echo "Location matched"
+elif [[ "$domain_location" == *"200 OK"* ]] && [[  "$domain_location" = *"Location"*  ]]; then
+    echo "There is a redirect"
+    echo "Domain location after redirects: " "$domain_location"
+    domain_location_strip=$(echo "$domain_location" | awk -F'Location' '{print $1}')
+fi
+
+# if $domain_location = Location and https not in line
+if [  "$domain_location" == *"https"* ]; then
+    echo "Site is HTTPS not HTTP...exiting"
+elif [ ! "$domain_location" == "200 OK" ]; then
+    echo "Location is not standard http...exiting" 
+    exit
+fi
+
+}
+
 function whichsite {
 
 while [ "$validation" -le 0 ]; do
-        printf "Port 80 sites: \n\n"
+        printf "Site(s) available: \n\n"
         printf "$sites\n\n"
         read -p "What local site would you like to check? " sitecheck
 if [ $Distro == "CentOS" ] || [ $Distro == "Red Hat" ]; then
         validation=$( /usr/sbin/httpd -S 2>&1 | grep "namevhost $sitecheck" | wc -l )
         port_check=$( /usr/sbin/httpd -S 2>&1 | grep "namevhost $sitecheck" | awk -F':' '{print $1} '| sed 's/[^0-9]*//g')
+        http_or_https 
 elif [ $Distro == "Ubuntu" ] || [ $Distro = 'Debian' ]; then
         validation=$( /usr/sbin/apache2 -S 2>&1 | grep "namevhost $sitecheck" | wc -l )
         port_check=$( /usr/sbin/apache2 -S 2>&1 | grep "namevhost $sitecheck" | awk -F':' '{print $1} '| sed 's/[^0-9]*//g')
+        http_or_https 
 fi
-        echo $validation
+#        echo $validation
 done
 }
 
 function outputfilename {
-read -p "Specify strace file other than default? (Default: /home/rack/output (y/N) " filenameyn
+read -p "Use Default file for output: (/home/rack/output (y/N)) " filenameyn
   case $filenameyn in
     y|ye|yes )
-     read -p "What filename would you like? /tmp/ " default
+        break
     ;;
     n|N|no )
-      break
+        read -p "What filename would you like? /tmp/ " default
     ;;
     * )
       printf "Please enter a valid option"
@@ -196,8 +231,8 @@ read -p "Specify strace file other than default? (Default: /home/rack/output (y/
                 outputfilename
         done
 
-
-        telnetcommands | telnet 127.0.0.1 $port_check | grep 'HTTP/1.1\|Date:\|Server:\|Last-Modified:\|Content-Type:'
+        telnetcommands | telnet 127.0.0.1 "$port_check" | grep 'HTTP/1.1\|Date:\|Server:\|Last-Modified:\|Content-Type:'
+#        telnetcommands | telnet 127.0.0.1 8080 | grep 'HTTP/1.1\|Date:\|Server:\|Last-Modified:\|Content-Type:'
         echo ""
         echo "Check /home/rack/"$default " for the output of strace"
         echo "Check /home/rack/stracesort for a list of the syscalls in time order"
